@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    
+    <style>
+        input::-webkit-inner-spin-button{
+            -webkit-appearance: none;
+        }
+        input[type='number']{
+            width: 50%;
+        }
+        
+        label{
+            font-weight: bold;
+            margin-top: 4px;
+        }
+        .data{
+            display: grid;
+            grid-template-columns: 6fr 6fr;
+            padding: 10px;
+        }
+        body{
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 6fr 6fr;
+        }
+        .slide-bar{
+            position: relative;
+            display: grid;
+            grid-template-columns: 3fr 3fr 3fr 3fr;
+        }
+        .slide-bar span{
+            height: 10px;
+            width: 100%;
+        }
+        #slider{
+            position: absolute;
+            background-color: black;
+            height: 25px;
+            width: 5px;
+            border-radius: 3px;
+            display: none;
+            left: 30px;
+            bottom: 4px;
+        }
+        .gender button{
+            background-color: transparent;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover,input:hover{
+            box-shadow:black 1px 1px 4px;
+            border-radius: 4px;
+        }
+        img{
+            height: 10vh;
+        }
+        @media only screen and (max-width:600px){
+            body{
+            padding: 4px;
+            display: grid;
+            grid-template-columns:12fr;
+        }
+        .slide-bar{
+            font-size: x-small;
+        }
+        }
+        @media only screen and (max-width:200px){
+            .data{
+            padding: 15px;
+            display: grid;
+            grid-template-columns:12fr;
+        }input[type='number']{
+            width: 70%;
+        }
+        body,.data{
+            text-align: center;
+        }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-dark-subtle p-2">       
+        <img  src="https://www.iciciprulife.com/content/icici-prudential-life-insurance/tools-and-calculators/bmi_assets/images/Component21.svg">
+       <h4>BMI Calculator</h4>Body Mass Index
+    </div><div class="bg- bg-dark-subtle"></div>
+
+    <div class="data">
+           <div class="gender">
+            <label for="gender">Gender</label><br>
+             <button onclick="male()" id="male">Male</button>
+             <button onclick="female()" id="female">Female</button>
+           </div>
+            <div>
+                <label for="years">Age</label><br>
+                 <input type="number" id="years" name="years" min="2" placeholder="years">
+            </div>
+            <div>
+                <label for="height">Height</label><br>
+                 <input id="feets" type="number" min="1"  placeholder="feets" size="3">
+                 <input id="inches" type="number" min="0"  placeholder="inches" size="3">
+            </div>
+           <div>
+            <label for="kgs">Weight</label><br>
+            <input id="kgs" name="kgs" placeholder="kgs" min="1" type="number">
+           </div>
+           <div></div>
+           <div class="m-1">
+             <button onclick="calculateBMI()" class="btn btn-warning">Calculate</button>
+           </div>
+    </div>
+
+    <div class="result text-center p-2 mt-1">
+        <div class="slide-bar">
+            <span class="bg-danger rounded-start-pill"></span><span class="bg-success"></span>
+            <span class="bg-warning"></span><span class="bg-danger rounded-end-pill"></span>
+            <span>Under-Weight</span><span>Normal</span><span>Over-Weight</span><span>Obesity</span>
+            <span id="slider"></span>
+        </div><br><br>
+            <span class="h4" id="BMI"></span><br><br><br><br>
+            <span class="h3" id="headinfo"></span><br>
+            <p class="h5 text-start" id="parainfo"></p>
+    </div>
+
+    <script>
+        var input=document.querySelectorAll('input');
+for(var i=0;i<input.length;i++){
+  input[i].setAttribute('class',"cls"+i);
+  input[i].addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    var num=parseInt((event.target.className).substr(3))+1;
+    if(document.querySelector('.cls'+num)){
+    document.querySelector('.cls'+num).focus();}
+    if(num===input.length){document.querySelector('.btn').focus();}
+  }
+});
+}
+    
+    
+            var m=0;
+            var f=0;
+            
+            function male(){
+                m=1;
+                f=0;
+                document.getElementById('male').style.backgroundColor='lightblue';
+                document.getElementById('female').style.backgroundColor='transparent';
+            }
+            function female(){
+                f=1;
+                m=0;
+                document.getElementById('female').style.backgroundColor='lightblue';
+                document.getElementById('male').style.backgroundColor='transparent';
+            }
+            function calculateBMI(){
+             var feets=document.getElementById("feets").value;
+             var year =document.getElementById("years").value;
+             var Weight=document.getElementById("kgs").value;
+             var result=document.getElementById("BMI");
+                result.style.color="red";
+                document.getElementById("parainfo").innerHTML='';
+                document.getElementById("headinfo").innerHTML='';
+                if(f==0 && m==0){
+                result.innerHTML="plese select gender....";}
+                else if(year<2 || year==undefined){result.innerHTML='please enter age between 2 and 120'}
+                else if(Weight==undefined || Weight<1){result.innerHTML='please enter weight in kgs'}
+                else if(feets==undefined || feets<=0){result.innerHTML='please enter height in feet and inches'}
+                else{
+                feets=parseFloat(document.getElementById("feets").value);
+                year =parseFloat(document.getElementById("years").value);
+                Weight=parseFloat(document.getElementById("kgs").value);
+                var inches;
+                if(document.getElementById("inches").value==''){inches=0;}
+                else{inches=parseFloat(document.getElementById("inches").value);}
+                var meter=(feets+(inches/12))/3.28084;
+                var BMI=Weight/ Math.pow(meter,2);
+    
+                    function bmiResult(left,headInfo,color){
+                        document.getElementById("slider").style.display="block";
+                    document.getElementById("slider").style.left=left+"%";
+                    document.getElementById("headinfo").innerHTML=headInfo;
+                    document.getElementById("headinfo").style.color=color;
+                    document.getElementById("BMI").style.color=color;
+                    document.getElementById("parainfo").innerHTML="By maintaining a healthy weight, you lower your risk of developing serious health problems.";
+                    document.getElementById("BMI").innerHTML="Your BMI is "+BMI.toFixed(2);
+                    }
+                if(BMI<18.5){
+                    bmiResult(12,"Time to grab a bite!","red");
+                }
+                else if(BMI<24.9){
+                    bmiResult(37,"Great shape","green");
+                }
+                else if(BMI<29.9){
+                    bmiResult(62,"Time to run!","orange");
+                }
+                else{
+                    bmiResult(87,"Time to run!","red");
+                    }
+              }
+            }
+        </script>
+
+</body>
+</html>
